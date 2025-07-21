@@ -1,0 +1,191 @@
+[
+  {
+    "id": "li-bai-burst",
+    "heroId": "li-bai",
+    "name": "Burst Assassin",
+    "type": "jungle",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Rapacious Bite", "Bloodweeper", "Nightmare"],
+      "situational": ["Fenrir's Tooth", "Blade of Despair", "Immortal"],
+      "boots": "Swift Boots"
+    },
+    "arcana": {
+      "red": "Hunt",
+      "blue": "Mutation",
+      "green": "Reaver"
+    },
+    "skillOrder": [2, 1, 2, 3, 2, 1, 2, 1, 2, 1, 3, 1, 3, 3, 3],
+    "gamePhase": {
+      "early": "Focus on farming and ganking overextended enemies",
+      "mid": "Look for picks on isolated targets",
+      "late": "Flank in team fights and eliminate carries"
+    },
+    "rating": 4.6,
+    "votes": 1247,
+    "author": "ProPlayer123",
+    "lastUpdated": "2024-01-15"
+  },
+  {
+    "id": "diaochan-control",
+    "heroId": "diaochan",
+    "name": "Control Mage",
+    "type": "mid",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Orb of the Magi", "Boots of Tranquility", "Staff of Nuul"],
+      "situational": ["Divine Punishment Rod", "Hecate's Diadem", "Sage's Sanctuary"],
+      "boots": "Boots of Tranquility"
+    },
+    "arcana": {
+      "red": "Violate",
+      "blue": "Mind's Eye",
+      "green": "Void"
+    },
+    "skillOrder": [1, 2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Farm safely and poke enemies",
+      "mid": "Control team fights with ultimate",
+      "late": "Stay back and deal consistent damage"
+    },
+    "rating": 4.3,
+    "votes": 892,
+    "author": "MageMain",
+    "lastUpdated": "2024-01-12"
+  },
+  {
+    "id": "arthur-tank",
+    "heroId": "arthur",
+    "name": "Frontline Tank",
+    "type": "solo",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Crimson Banner", "Boots of Resistance", "Aegis"],
+      "situational": ["Mail of Pain", "Antique Cuirass", "Immortal"],
+      "boots": "Boots of Resistance"
+    },
+    "arcana": {
+      "red": "Indomitable",
+      "blue": "Osmosis",
+      "green": "Valiance"
+    },
+    "skillOrder": [1, 2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Farm and trade efficiently",
+      "mid": "Engage team fights",
+      "late": "Protect carries and initiate"
+    },
+    "rating": 4.1,
+    "votes": 654,
+    "author": "TankExpert",
+    "lastUpdated": "2024-01-10"
+  },
+  {
+    "id": "monkey-king-jungle",
+    "heroId": "monkey-king",
+    "name": "Jungle Assassin",
+    "type": "jungle",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Jungle Knife", "Rapacious Bite", "Bloodweeper"],
+      "situational": ["Fenrir's Tooth", "Blade of Despair", "Immortal"],
+      "boots": "Swift Boots"
+    },
+    "arcana": {
+      "red": "Hunt",
+      "blue": "Mutation",
+      "green": "Reaver"
+    },
+    "skillOrder": [1, 2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Farm jungle and gank overextended lanes",
+      "mid": "Use disguise for surprise ganks",
+      "late": "Focus on eliminating enemy carries"
+    },
+    "rating": 4.4,
+    "votes": 892,
+    "author": "JungleKing",
+    "lastUpdated": "2024-01-14"
+  },
+  {
+    "id": "marco-polo-adc",
+    "heroId": "marco-polo",
+    "name": "ADC Marksman",
+    "type": "adc",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Claves Sancti", "Endless Battle", "Wind Walker"],
+      "situational": ["Blade of Despair", "Immortal", "Fenrir's Tooth"],
+      "boots": "Swift Boots"
+    },
+    "arcana": {
+      "red": "Violate",
+      "blue": "Eagle Eye",
+      "green": "Reaver"
+    },
+    "skillOrder": [1, 2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Farm safely and poke enemies",
+      "mid": "Join team fights for objectives",
+      "late": "Stay back and deal consistent damage"
+    },
+    "rating": 4.2,
+    "votes": 756,
+    "author": "ADCMain",
+    "lastUpdated": "2024-01-13"
+  },
+  {
+    "id": "zhang-fei-support",
+    "heroId": "zhang-fei",
+    "name": "Support Tank",
+    "type": "support",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Crimson Banner", "Aegis", "Antique Cuirass"],
+      "situational": ["Mail of Pain", "Immortal", "Oracle"],
+      "boots": "Boots of Resistance"
+    },
+    "arcana": {
+      "red": "Indomitable",
+      "blue": "Osmosis",
+      "green": "Valiance"
+    },
+    "skillOrder": [2, 1, 2, 3, 2, 1, 2, 1, 2, 1, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Protect ADC and ward objectives",
+      "mid": "Initiate team fights",
+      "late": "Peel for carries and tank damage"
+    },
+    "rating": 4.0,
+    "votes": 543,
+    "author": "SupportPro",
+    "lastUpdated": "2024-01-11"
+  },
+  {
+    "id": "ying-zheng-mid",
+    "heroId": "ying-zheng",
+    "name": "Control Mage",
+    "type": "mid",
+    "patch": "1.98.1.15",
+    "items": {
+      "core": ["Orb of the Magi", "Staff of Nuul", "Divine Punishment Rod"],
+      "situational": ["Hecate's Diadem", "Sage's Sanctuary", "Immortal"],
+      "boots": "Boots of Tranquility"
+    },
+    "arcana": {
+      "red": "Violate",
+      "blue": "Mind's Eye",
+      "green": "Void"
+    },
+    "skillOrder": [1, 2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3],
+    "gamePhase": {
+      "early": "Farm and poke with walls",
+      "mid": "Control objectives with area denial",
+      "late": "Zone enemies in team fights"
+    },
+    "rating": 4.7,
+    "votes": 1123,
+    "author": "EmperorMain",
+    "lastUpdated": "2024-01-16"
+  }
+]

@@ -1,0 +1,498 @@
+[
+  {
+    "id": "agudo",
+    "name": "Agudo",
+    "nameArabic": "أغودو",
+    "nameChinese": "阿古朵",
+    "title": "The Forest Guardian",
+    "titleArabic": "حارس الغابة",
+    "titleChinese": "森林守护者",
+    "role": "Tank",
+    "roleArabic": "دبابة",
+    "roleChinese": "坦克",
+    "difficulty": "Medium",
+    "difficultyArabic": "متوسط",
+    "difficultyChinese": "中等",
+    "releaseDate": "2021-03-15",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_agudo.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_agudo.png",
+    "lore": "A mystical forest guardian who protects nature with ancient magic.",
+    "loreArabic": "حارس غابة صوفي يحمي الطبيعة بالسحر القديم.",
+    "loreChinese": "一位神秘的森林守护者，用古老的魔法保护自然。",
+    "stats": {
+      "hp": 3650,
+      "mana": 450,
+      "attack": 160,
+      "defense": 92,
+      "speed": 340
+    },
+    "skills": [
+      {
+        "name": "Nature's Call",
+        "nameArabic": "نداء الطبيعة",
+        "nameChinese": "自然召唤",
+        "type": "passive",
+        "description": "Agudo gains health regeneration when near jungle monsters or in brush.",
+        "descriptionArabic": "أغودو يكتسب تجديد الصحة عندما يكون بالقرب من وحوش الغابة أو في الأدغال.",
+        "descriptionChinese": "阿古朵在野怪附近或草丛中时获得生命回复。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["sun-shangxiang", "hou-yi", "marco-polo"],
+    "synergies": ["diaochan", "zhou-yu", "wang-zhaojun"],
+    "tips": [
+      "Use jungle positioning for health regen",
+      "Engage with crowd control abilities",
+      "Build magic resistance items"
+    ],
+    "tipsArabic": [
+      "استخدم تموضع الغابة لتجديد الصحة",
+      "ابدأ بقدرات التحكم في الحشود",
+      "اشتر عناصر مقاومة السحر"
+    ],
+    "tipsChinese": [
+      "利用野区位置进行生命回复",
+      "用控制技能开团",
+      "购买魔法抗性装备"
+    ],
+    "winRate": 52.1,
+    "pickRate": 8.3,
+    "banRate": 4.7,
+    "tier": "B"
+  },
+  {
+    "id": "arthur",
+    "name": "Arthur",
+    "nameArabic": "آرثر",
+    "nameChinese": "亚瑟",
+    "title": "The Once and Future King",
+    "titleArabic": "الملك الماضي والمستقبلي",
+    "titleChinese": "永恒之王",
+    "role": "Tank",
+    "roleArabic": "دبابة",
+    "roleChinese": "坦克",
+    "difficulty": "Easy",
+    "difficultyArabic": "سهل",
+    "difficultyChinese": "简单",
+    "releaseDate": "2015-10-01",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_arthur.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_arthur.png",
+    "lore": "The legendary king who wields Excalibur and protects his allies with unwavering determination.",
+    "loreArabic": "الملك الأسطوري الذي يحمل إكسكاليبر ويحمي حلفاءه بعزيمة لا تتزعزع.",
+    "loreChinese": "传说中的国王，挥舞着圣剑，以坚定不移的决心保护盟友。",
+    "stats": {
+      "hp": 3542,
+      "mana": 430,
+      "attack": 168,
+      "defense": 95,
+      "speed": 350
+    },
+    "skills": [
+      {
+        "name": "Holy Sword",
+        "nameArabic": "السيف المقدس",
+        "nameChinese": "圣剑",
+        "type": "passive",
+        "description": "Arthur's basic attacks reduce ability cooldowns and heal him.",
+        "descriptionArabic": "الهجمات الأساسية لآرثر تقلل أوقات إعادة الشحن وتشفيه.",
+        "descriptionChinese": "亚瑟的普通攻击减少技能冷却时间并治疗自己。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["sun-shangxiang", "marco-polo", "luban-7"],
+    "synergies": ["diaochan", "angela", "cai-wenji"],
+    "tips": [
+      "Engage fights with ultimate",
+      "Use silence to shut down key enemies",
+      "Build tanky items for survivability"
+    ],
+    "tipsArabic": [
+      "ابدأ المعارك بالقدرة النهائية",
+      "استخدم الصمت لإيقاف الأعداء المهمين",
+      "اشتر عناصر دفاعية للبقاء"
+    ],
+    "tipsChinese": [
+      "用大招开团",
+      "用沉默控制关键敌人",
+      "购买坦克装备提高生存能力"
+    ],
+    "winRate": 51.2,
+    "pickRate": 15.8,
+    "banRate": 5.3,
+    "tier": "B"
+  },
+  {
+    "id": "li-bai",
+    "name": "Li Bai",
+    "nameArabic": "لي باي",
+    "nameChinese": "李白",
+    "title": "Poetic Swordsman",
+    "titleArabic": "سياف الشعر",
+    "titleChinese": "诗仙剑客",
+    "role": "Assassin",
+    "roleArabic": "قاتل",
+    "roleChinese": "刺客",
+    "difficulty": "Hard",
+    "difficultyArabic": "صعب",
+    "difficultyChinese": "困难",
+    "releaseDate": "2016-10-01",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_libai.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_libai.png",
+    "lore": "A poetic swordsman who slashes through enemies with elegant strikes and graceful movements.",
+    "loreArabic": "سياف شاعري يقطع الأعداء بضربات أنيقة وحركات رشيقة.",
+    "loreChinese": "一位诗意的剑客，以优雅的攻击和优美的动作斩杀敌人。",
+    "stats": {
+      "hp": 3225,
+      "mana": 420,
+      "attack": 181,
+      "defense": 85,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Chivalrous Sword",
+        "nameArabic": "سيف الفروسية",
+        "nameChinese": "侠客行",
+        "type": "passive",
+        "description": "Li Bai's abilities mark enemies. After 4 marks, his next ability deals true damage.",
+        "descriptionArabic": "قدرات لي باي تضع علامات على الأعداء. بعد 4 علامات، قدرته التالية تلحق ضرراً حقيقياً.",
+        "descriptionChinese": "李白的技能标记敌人。4个标记后，下一个技能造成真实伤害。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["ying-zheng", "luban-7", "angela"],
+    "synergies": ["zhang-fei", "diaochan", "sun-bin"],
+    "tips": [
+      "Avoid CC before engaging with ultimate",
+      "Look for flanking opportunities",
+      "Use passive marks efficiently"
+    ],
+    "tipsArabic": [
+      "تجنب التحكم قبل استخدام القدرة النهائية",
+      "ابحث عن فرص المناورة الجانبية",
+      "استخدم علامات القدرة السلبية بكفاءة"
+    ],
+    "tipsChinese": [
+      "使用大招前避免被控制",
+      "寻找侧翼机会",
+      "有效利用被动标记"
+    ],
+    "winRate": 52.3,
+    "pickRate": 8.7,
+    "banRate": 15.2,
+    "tier": "S"
+  },
+  {
+    "id": "diaochan",
+    "name": "Diaochan",
+    "nameArabic": "دياو تشان",
+    "nameChinese": "貂蝉",
+    "title": "The Bewitching Beauty",
+    "titleArabic": "الجمال الساحر",
+    "titleChinese": "绝世舞姬",
+    "role": "Mage",
+    "roleArabic": "ساحر",
+    "roleChinese": "法师",
+    "difficulty": "Medium",
+    "difficultyArabic": "متوسط",
+    "difficultyChinese": "中等",
+    "releaseDate": "2015-11-26",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_diaochan.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_diaochan.png",
+    "lore": "A legendary beauty whose charm can bewitch enemies and turn the tide of battle.",
+    "loreArabic": "جمال أسطوري يمكن لسحرها أن يفتن الأعداء ويغير مجرى المعركة.",
+    "loreChinese": "传说中的美女，其魅力可以迷惑敌人并扭转战局。",
+    "stats": {
+      "hp": 2890,
+      "mana": 490,
+      "attack": 168,
+      "defense": 78,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Seal of Scorn",
+        "nameArabic": "ختم الازدراء",
+        "nameChinese": "语·花印",
+        "type": "passive",
+        "description": "Diaochan's abilities reduce enemy movement speed and deal additional damage over time.",
+        "descriptionArabic": "قدرات دياو تشان تقلل سرعة حركة العدو وتلحق ضرراً إضافياً مع مرور الوقت.",
+        "descriptionChinese": "貂蝉的技能减少敌人移动速度并造成持续伤害。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["han-xin", "luna", "monkey-king"],
+    "synergies": ["arthur", "zhang-fei", "angela"],
+    "tips": [
+      "Use ultimate to control team fights",
+      "Position safely behind tanks",
+      "Combo abilities for maximum damage"
+    ],
+    "tipsArabic": [
+      "استخدم القدرة النهائية للتحكم في معارك الفريق",
+      "تموضع بأمان خلف الدبابات",
+      "اجمع القدرات للحصول على أقصى ضرر"
+    ],
+    "tipsChinese": [
+      "用大招控制团战",
+      "安全地站在坦克后面",
+      "连招技能造成最大伤害"
+    ],
+    "winRate": 48.7,
+    "pickRate": 12.4,
+    "banRate": 8.9,
+    "tier": "A"
+  },
+  {
+    "id": "luban-7",
+    "name": "Luban No.7",
+    "nameArabic": "لوبان رقم 7",
+    "nameChinese": "鲁班七号",
+    "title": "Mech Genius",
+    "titleArabic": "عبقري الآلات",
+    "titleChinese": "机关造物师",
+    "role": "Marksman",
+    "roleArabic": "رامي",
+    "roleChinese": "射手",
+    "difficulty": "Medium",
+    "difficultyArabic": "متوسط",
+    "difficultyChinese": "中等",
+    "releaseDate": "2016-03-15",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_luban7.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_luban7.png",
+    "lore": "A brilliant inventor who uses mechanical contraptions and precise shots to dominate the battlefield.",
+    "loreArabic": "مخترع عبقري يستخدم الآلات الميكانيكية والطلقات الدقيقة للهيمنة على ساحة المعركة.",
+    "loreChinese": "一位天才发明家，使用机械装置和精准射击统治战场。",
+    "stats": {
+      "hp": 3180,
+      "mana": 440,
+      "attack": 164,
+      "defense": 80,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Mechanical Genius",
+        "nameArabic": "العبقرية الميكانيكية",
+        "nameChinese": "机关造物",
+        "type": "passive",
+        "description": "Luban's abilities have enhanced range and deal bonus damage.",
+        "descriptionArabic": "قدرات لوبان لها مدى محسن وتلحق ضرراً إضافياً.",
+        "descriptionChinese": "鲁班的技能拥有增强射程并造成额外伤害。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["li-bai", "han-xin", "luna"],
+    "synergies": ["cai-wenji", "zhang-fei", "sun-bin"],
+    "tips": [
+      "Maintain safe distance in fights",
+      "Use poke to harass enemies",
+      "Position behind cover"
+    ],
+    "tipsArabic": [
+      "حافظ على مسافة آمنة في المعارك",
+      "استخدم الوخز لمضايقة الأعداء",
+      "تموضع خلف الغطاء"
+    ],
+    "tipsChinese": [
+      "在战斗中保持安全距离",
+      "用消耗技能骚扰敌人",
+      "站在掩体后面"
+    ],
+    "winRate": 49.8,
+    "pickRate": 18.2,
+    "banRate": 12.7,
+    "tier": "A"
+  },
+  {
+    "id": "angela",
+    "name": "Angela",
+    "nameArabic": "أنجيلا",
+    "nameChinese": "安琪拉",
+    "title": "Doll Guardian",
+    "titleArabic": "حارسة الدمية",
+    "titleChinese": "玩偶对对碰",
+    "role": "Support",
+    "roleArabic": "داعم",
+    "roleChinese": "辅助",
+    "difficulty": "Easy",
+    "difficultyArabic": "سهل",
+    "difficultyChinese": "简单",
+    "releaseDate": "2017-01-20",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_angela.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_angela.png",
+    "lore": "A magical doll who protects her allies with shields and healing while controlling the battlefield.",
+    "loreArabic": "دمية سحرية تحمي حلفاءها بالدروع والشفاء بينما تتحكم في ساحة المعركة.",
+    "loreChinese": "一个魔法玩偶，用护盾和治疗保护盟友，同时控制战场。",
+    "stats": {
+      "hp": 2756,
+      "mana": 430,
+      "attack": 109,
+      "defense": 75,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Doll Affinity",
+        "nameArabic": "تقارب الدمية",
+        "nameChinese": "玩偶契约",
+        "type": "passive",
+        "description": "Angela can attach to allies, providing shields and enhanced abilities.",
+        "descriptionArabic": "يمكن لأنجيلا الالتصاق بالحلفاء، مما يوفر دروعاً وقدرات محسنة.",
+        "descriptionChinese": "安琪拉可以附着在盟友身上，提供护盾和增强能力。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["ying-zheng", "zhou-yu", "wang-zhaojun"],
+    "synergies": ["arthur", "sun-shangxiang", "marco-polo"],
+    "tips": [
+      "Attach to carry players",
+      "Use ultimate to save allies",
+      "Stay behind frontline"
+    ],
+    "tipsArabic": [
+      "التصق باللاعبين الحاملين",
+      "استخدم القدرة النهائية لإنقاذ الحلفاء",
+      "ابق خلف الخط الأمامي"
+    ],
+    "tipsChinese": [
+      "附着在输出英雄身上",
+      "用大招拯救盟友",
+      "待在前排后面"
+    ],
+    "winRate": 53.1,
+    "pickRate": 22.5,
+    "banRate": 18.4,
+    "tier": "S"
+  },
+  {
+    "id": "han-xin",
+    "name": "Han Xin",
+    "nameArabic": "هان شين",
+    "nameChinese": "韩信",
+    "title": "The Conqueror",
+    "titleArabic": "الفاتح",
+    "titleChinese": "国士无双",
+    "role": "Assassin",
+    "roleArabic": "قاتل",
+    "roleChinese": "刺客",
+    "difficulty": "Hard",
+    "difficultyArabic": "صعب",
+    "difficultyChinese": "困难",
+    "releaseDate": "2016-08-15",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_hanxin.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_hanxin.png",
+    "lore": "A legendary general known for his tactical brilliance and swift strikes.",
+    "loreArabic": "جنرال أسطوري معروف ببراعته التكتيكية وضرباته السريعة.",
+    "loreChinese": "传奇将军，以其战术才华和迅猛攻击而闻名。",
+    "stats": {
+      "hp": 3125,
+      "mana": 420,
+      "attack": 175,
+      "defense": 82,
+      "speed": 390
+    },
+    "skills": [
+      {
+        "name": "King's Will",
+        "nameArabic": "إرادة الملك",
+        "nameChinese": "王者之志",
+        "type": "passive",
+        "description": "Han Xin gains attack speed and movement speed after using abilities.",
+        "descriptionArabic": "هان شين يكتسب سرعة الهجوم وسرعة الحركة بعد استخدام القدرات.",
+        "descriptionChinese": "韩信使用技能后获得攻击速度和移动速度。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["arthur", "zhang-fei", "lian-po"],
+    "synergies": ["diaochan", "angela", "cai-wenji"],
+    "tips": [
+      "Master the multi-dash combo",
+      "Focus on jungle control",
+      "Look for isolated targets"
+    ],
+    "tipsArabic": [
+      "أتقن تركيبة الاندفاع المتعدد",
+      "ركز على السيطرة على الغابة",
+      "ابحث عن الأهداف المعزولة"
+    ],
+    "tipsChinese": [
+      "掌握多段位移连招",
+      "专注于野区控制",
+      "寻找孤立的目标"
+    ],
+    "winRate": 54.1,
+    "pickRate": 16.3,
+    "banRate": 22.8,
+    "tier": "S+"
+  },
+  {
+    "id": "marco-polo",
+    "name": "Marco Polo",
+    "nameArabic": "ماركو بولو",
+    "nameChinese": "马可波罗",
+    "title": "Desert Explorer",
+    "titleArabic": "مستكشف الصحراء",
+    "titleChinese": "远游之枪",
+    "role": "Marksman",
+    "roleArabic": "رامي",
+    "roleChinese": "射手",
+    "difficulty": "Medium",
+    "difficultyArabic": "متوسط",
+    "difficultyChinese": "中等",
+    "releaseDate": "2016-08-15",
+    "image": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_marcopolo.png",
+    "avatar": "https://img.gamewith.net/article_tools/honor-of-kings/gacha/i_marcopolo.png",
+    "lore": "A fearless explorer who uses dual pistols and advanced technology.",
+    "loreArabic": "مستكشف لا يعرف الخوف يستخدم مسدسين مزدوجين وتكنولوجيا متقدمة.",
+    "loreChinese": "无畏的探险家，使用双枪和先进技术。",
+    "stats": {
+      "hp": 3050,
+      "mana": 420,
+      "attack": 171,
+      "defense": 75,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Magnificent Plunder",
+        "nameArabic": "النهب الرائع",
+        "nameChinese": "华丽左轮",
+        "type": "passive",
+        "description": "Marco Polo gains movement speed and attack speed after using abilities.",
+        "descriptionArabic": "ماركو بولو يكتسب سرعة الحركة وسرعة الهجوم بعد استخدام القدرات.",
+        "descriptionChinese": "马可波罗使用技能后获得移动速度和攻击速度。",
+        "cooldown": 0,
+        "manaCost": 0
+      }
+    ],
+    "counters": ["li-bai", "monkey-king", "han-xin"],
+    "synergies": ["angela", "cai-wenji", "zhang-fei"],
+    "tips": [
+      "Maintain safe distance",
+      "Use mobility to kite enemies",
+      "Position behind frontline"
+    ],
+    "tipsArabic": [
+      "حافظ على مسافة آمنة",
+      "استخدم الحركة لجذب الأعداء",
+      "تموضع خلف الخط الأمامي"
+    ],
+    "tipsChinese": [
+      "保持安全距离",
+      "用机动性风筝敌人",
+      "站在前排后面"
+    ],
+    "winRate": 51.7,
+    "pickRate": 16.8,
+    "banRate": 9.3,
+    "tier": "A"
+  }
+]
