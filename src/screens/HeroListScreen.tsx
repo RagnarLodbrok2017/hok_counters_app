@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
-import { Searchbar, Chip, Card, Title, Paragraph } from 'react-native-paper';
+import { Searchbar, Chip, Card, Title, Paragraph, Snackbar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors } from '../theme/theme';
 import { useLanguage } from '../context/LanguageContext';
-import heroesData from '../data/allHeroes.json';
+import { useAllHeroes, useHeroSearch } from '../hooks/useHeroes';
 
 const { width } = Dimensions.get('window');
 
@@ -21,8 +23,22 @@ const HeroListScreen = ({ navigation }: any) => {
   const { language, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
+  const [showError, setShowError] = useState(false);
 
   const roles = ['All', 'Tank', 'Fighter', 'Assassin', 'Mage', 'Marksman', 'Support'];
+
+  // Use real API data
+  const {
+    data: allHeroes = [],
+    isLoading,
+    error,
+    refetch
+  } = useAllHeroes();
+
+  const {
+    data: searchResults = [],
+    isLoading: isSearching
+  } = useHeroSearch(searchQuery);
 
   const getRoleColor = (role: string) => {
     const roleColors: { [key: string]: string } = {
@@ -37,60 +53,110 @@ const HeroListScreen = ({ navigation }: any) => {
   };
 
   const filteredHeroes = useMemo(() => {
-    return heroesData.filter((hero) => {
-      const matchesSearch = hero.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           hero.nameArabic.includes(searchQuery) ||
-                           hero.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesRole = selectedRole === 'All' || hero.role === selectedRole;
-      return matchesSearch && matchesRole;
-    });
-  }, [searchQuery, selectedRole]);
+    let filtered = searchQuery.length >= 2 ? searchResults : allHeroes;
 
-  const renderHeroCard = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.heroCard}
-      onPress={() => navigation.navigate('HeroDetail', { hero: item })}
-    >
-      <Card style={styles.card}>
-        <LinearGradient
-          colors={[getRoleColor(item.role), `${getRoleColor(item.role)}80`]}
-          style={styles.cardGradient}
-        >
-          <View style={styles.heroHeader}>
-            <Image source={{ uri: item.image }} style={styles.heroImage} />
-            <View style={styles.tierBadge}>
-              <Text style={styles.tierText}>{item.tier}</Text>
-            </View>
-          </View>
-          <View style={styles.heroInfo}>
-            <Title style={styles.heroName}>{item.name}</Title>
-            <Text style={styles.heroNameArabic}>{item.nameArabic}</Text>
-            <Paragraph style={styles.heroTitle}>{item.title}</Paragraph>
-            <View style={styles.heroMeta}>
-              <View style={styles.roleChip}>
-                <Text style={styles.roleText}>{item.role}</Text>
-              </View>
-              <Text style={styles.difficulty}>{item.difficulty}</Text>
-            </View>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{item.winRate}%</Text>
-                <Text style={styles.statLabel}>Win Rate</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{item.pickRate}%</Text>
-                <Text style={styles.statLabel}>Pick Rate</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{item.banRate}%</Text>
-                <Text style={styles.statLabel}>Ban Rate</Text>
+    if (selectedRole !== 'All') {
+      filtered = filtered.filter(hero => hero.role === selectedRole);
+    }
+
+    return filtered;
+  }, [allHeroes, searchResults, selectedRole, searchQuery]);
+
+  const renderHeroCard = ({ item }: { item: any }) => {
+    const heroImage = item.skins?.[0]?.image || 'https://via.placeholder.com/150x150/333/fff?text=Hero';
+
+    return (
+      <TouchableOpacity
+        style={styles.heroCard}
+        onPress={() => navigation.navigate('HeroDetail', {
+          hero: item,
+          heroName: item.name
+        })}
+      >
+        <Card style={styles.card}>
+          <LinearGradient
+            colors={[getRoleColor(item.role), `${getRoleColor(item.role)}80`]}
+            style={styles.cardGradient}
+          >
+            <View style={styles.heroHeader}>
+              <Image source={{ uri: heroImage }} style={styles.heroImage} />
+              <View style={styles.tierBadge}>
+                <Text style={styles.tierText}>
+                  {item.tier || Math.floor(item.stats?.survival / 20) || 'A'}
+                </Text>
               </View>
             </View>
-          </View>
-        </LinearGradient>
-      </Card>
-    </TouchableOpacity>
+            <View style={styles.heroInfo}>
+              <Title style={styles.heroName}>{item.name}</Title>
+              <Text style={styles.heroNameArabic}>{item.nameArabic || ''}</Text>
+              <Paragraph style={styles.heroTitle}>{item.title}</Paragraph>
+              <View style={styles.heroMeta}>
+                <View style={styles.roleChip}>
+                  <Text style={styles.roleText}>{item.role}</Text>
+                </View>
+                <Text style={styles.difficulty}>{item.difficulty}</Text>
+              </View>
+              <View style={styles.statsRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{item.winRate}%</Text>
+                  <Text style={styles.statLabel}>Win Rate</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{item.pickRate}%</Text>
+                  <Text style={styles.statLabel}>Pick Rate</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{item.banRate || 0}%</Text>
+                  <Text style={styles.statLabel}>Ban Rate</Text>
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderLoadingState = () => (
+    <View style={styles.loadingState}>
+      <ActivityIndicator size="large" color={colors.primary} />
+      <Text style={styles.loadingText}>Loading heroes...</Text>
+    </View>
   );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Icon name="magnify-close" size={64} color={colors.textSecondary} />
+      <Text style={styles.emptyTitle}>No heroes found</Text>
+      <Text style={styles.emptySubtitle}>
+        {searchQuery
+          ? `No results for "${searchQuery}"`
+          : 'Try adjusting your filters'
+        }
+      </Text>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorState}>
+      <Icon name="alert-circle-outline" size={64} color={colors.error || '#F44336'} />
+      <Text style={styles.errorTitle}>Failed to load heroes</Text>
+      <Text style={styles.errorSubtitle}>
+        Please check your connection and try again
+      </Text>
+      <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
+        <Text style={styles.retryButtonText}>Retry</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        {renderErrorState()}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -103,6 +169,9 @@ const HeroListScreen = ({ navigation }: any) => {
           style={styles.searchBar}
           inputStyle={styles.searchInput}
           iconColor={colors.primary}
+          right={() => (isSearching && searchQuery.length >= 2) ? (
+            <ActivityIndicator size="small" color={colors.primary} />
+          ) : null}
         />
       </View>
 
@@ -134,22 +203,49 @@ const HeroListScreen = ({ navigation }: any) => {
       </View>
 
       {/* Heroes List */}
-      <FlatList
-        data={filteredHeroes}
-        renderItem={renderHeroCard}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.herosList}
-        showsVerticalScrollIndicator={false}
-      />
+      {isLoading ? (
+        renderLoadingState()
+      ) : filteredHeroes.length === 0 ? (
+        renderEmptyState()
+      ) : (
+        <FlatList
+          data={filteredHeroes}
+          renderItem={renderHeroCard}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.herosList}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={refetch}
+              colors={[colors.primary]}
+            />
+          }
+        />
+      )}
 
       {/* Results Count */}
-      <View style={styles.resultsContainer}>
-        <Text style={styles.resultsText}>
-          {filteredHeroes.length} heroes found
-        </Text>
-      </View>
+      {!isLoading && filteredHeroes.length > 0 && (
+        <View style={styles.resultsContainer}>
+          <Text style={styles.resultsText}>
+            {filteredHeroes.length} heroes found
+          </Text>
+        </View>
+      )}
+
+      <Snackbar
+        visible={showError}
+        onDismiss={() => setShowError(false)}
+        duration={3000}
+        action={{
+          label: 'Retry',
+          onPress: () => refetch(),
+        }}
+      >
+        Failed to load heroes data
+      </Snackbar>
     </View>
   );
 };
@@ -301,6 +397,68 @@ const styles = StyleSheet.create({
   resultsText: {
     color: colors.textSecondary,
     fontSize: 12,
+  },
+  // Loading state styles
+  loadingState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    color: colors.textSecondary,
+    fontSize: 16,
+    marginTop: 16,
+  },
+  // Empty state styles
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyTitle: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  // Error state styles
+  errorState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  errorTitle: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorSubtitle: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  retryButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

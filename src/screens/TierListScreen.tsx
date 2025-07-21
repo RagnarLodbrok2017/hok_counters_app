@@ -6,19 +6,30 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
-import { Card, Title, Chip, Searchbar } from 'react-native-paper';
+import { Card, Title, Chip, Searchbar, Snackbar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors } from '../theme/theme';
-import heroesData from '../data/heroes.json';
+import { useTierList } from '../hooks/useHeroes';
 
 const TierListScreen = () => {
   const [selectedRole, setSelectedRole] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showError, setShowError] = useState(false);
 
   const roles = ['All', 'Tank', 'Fighter', 'Assassin', 'Mage', 'Marksman', 'Support'];
   const tiers = ['S+', 'S', 'A', 'B', 'C'];
+
+  // Use real API data
+  const { 
+    data: tierListData = {}, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useTierList();
 
   const getTierColor = (tier: string) => {
     const tierColors: { [key: string]: string } = {
@@ -43,46 +54,49 @@ const TierListScreen = () => {
     return roleIcons[role] || 'help';
   };
 
-  const filteredHeroes = heroesData.filter(hero => {
-    const matchesRole = selectedRole === 'All' || hero.role === selectedRole;
-    const matchesSearch = hero.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesRole && matchesSearch;
-  });
+  // Filter heroes by role and search query
+  const getFilteredHeroesForTier = (tier: string) => {
+    const tierHeroes = tierListData[tier] || [];
+    return tierHeroes.filter((hero: any) => {
+      const matchesRole = selectedRole === 'All' || hero.role === selectedRole;
+      const matchesSearch = hero.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesRole && matchesSearch;
+    });
+  };
 
-  const groupedByTier = tiers.reduce((acc, tier) => {
-    acc[tier] = filteredHeroes.filter(hero => hero.tier === tier);
-    return acc;
-  }, {} as { [key: string]: any[] });
-
-  const renderHeroItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.heroItem}>
-      <LinearGradient
-        colors={[getTierColor(item.tier), `${getTierColor(item.tier)}80`]}
-        style={styles.heroGradient}
-      >
-        <Image source={{ uri: item.image }} style={styles.heroAvatar} />
-        <View style={styles.heroInfo}>
-          <Text style={styles.heroName}>{item.name}</Text>
-          <View style={styles.heroMeta}>
-            <Icon 
-              name={getRoleIcon(item.role)} 
-              size={12} 
-              color="#FFFFFF" 
-              style={styles.roleIcon}
-            />
-            <Text style={styles.heroRole}>{item.role}</Text>
+  const renderHeroItem = ({ item, tier }: { item: any; tier: string }) => {
+    const heroImage = item.skins?.[0]?.image || 'https://via.placeholder.com/150x150/333/fff?text=Hero';
+    
+    return (
+      <TouchableOpacity style={styles.heroItem}>
+        <LinearGradient
+          colors={[getTierColor(tier), `${getTierColor(tier)}80`]}
+          style={styles.heroGradient}
+        >
+          <Image source={{ uri: heroImage }} style={styles.heroAvatar} />
+          <View style={styles.heroInfo}>
+            <Text style={styles.heroName}>{item.name}</Text>
+            <View style={styles.heroMeta}>
+              <Icon 
+                name={getRoleIcon(item.role)} 
+                size={12} 
+                color="#FFFFFF" 
+                style={styles.roleIcon}
+              />
+              <Text style={styles.heroRole}>{item.role}</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.heroStats}>
-          <Text style={styles.winRate}>{item.winRate}%</Text>
-          <Text style={styles.statLabel}>WR</Text>
-        </View>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
+          <View style={styles.heroStats}>
+            <Text style={styles.winRate}>{item.winRate}%</Text>
+            <Text style={styles.statLabel}>WR</Text>
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
 
   const renderTierSection = (tier: string) => {
-    const heroes = groupedByTier[tier];
+    const heroes = getFilteredHeroesForTier(tier);
     if (heroes.length === 0) return null;
 
     return (
@@ -103,7 +117,7 @@ const TierListScreen = () => {
         </View>
         <FlatList
           data={heroes}
-          renderItem={renderHeroItem}
+          renderItem={({ item }) => renderHeroItem({ item, tier })}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
         />
@@ -122,12 +136,42 @@ const TierListScreen = () => {
     return descriptions[tier] || '';
   };
 
+  const renderLoadingState = () => (
+    <View style={styles.loadingState}>
+      <ActivityIndicator size="large" color={colors.primary} />
+      <Text style={styles.loadingText}>Loading tier list...</Text>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorState}>
+      <Icon name="alert-circle-outline" size={64} color={colors.error || '#F44336'} />
+      <Text style={styles.errorTitle}>Failed to load tier list</Text>
+      <Text style={styles.errorSubtitle}>
+        Please check your connection and try again
+      </Text>
+      <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
+        <Text style={styles.retryButtonText}>Retry</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        {renderErrorState()}
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Title style={styles.headerTitle}>Tier List</Title>
-        <Text style={styles.headerSubtitle}>Patch 1.98.1.15 • Updated Daily</Text>
+        <Text style={styles.headerSubtitle}>
+          {isLoading ? 'Loading...' : 'Live Data • Updated from API'}
+        </Text>
       </View>
 
       {/* Search */}
@@ -170,30 +214,55 @@ const TierListScreen = () => {
       </View>
 
       {/* Tier List */}
-      <FlatList
-        data={tiers}
-        renderItem={({ item }) => renderTierSection(item)}
-        keyExtractor={(item) => item}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.tierList}
-      />
+      {isLoading ? (
+        renderLoadingState()
+      ) : (
+        <FlatList
+          data={tiers}
+          renderItem={({ item }) => renderTierSection(item)}
+          keyExtractor={(item) => item}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.tierList}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={refetch}
+              colors={[colors.primary]}
+            />
+          }
+        />
+      )}
 
       {/* Legend */}
-      <Card style={styles.legendCard}>
-        <Card.Content>
-          <Text style={styles.legendTitle}>Tier Explanations</Text>
-          <View style={styles.legendGrid}>
-            {tiers.map(tier => (
-              <View key={tier} style={styles.legendItem}>
-                <View style={[styles.legendBadge, { backgroundColor: getTierColor(tier) }]}>
-                  <Text style={styles.legendTier}>{tier}</Text>
+      {!isLoading && (
+        <Card style={styles.legendCard}>
+          <Card.Content>
+            <Text style={styles.legendTitle}>Tier Explanations</Text>
+            <View style={styles.legendGrid}>
+              {tiers.map(tier => (
+                <View key={tier} style={styles.legendItem}>
+                  <View style={[styles.legendBadge, { backgroundColor: getTierColor(tier) }]}>
+                    <Text style={styles.legendTier}>{tier}</Text>
+                  </View>
+                  <Text style={styles.legendDesc}>{getTierDescription(tier)}</Text>
                 </View>
-                <Text style={styles.legendDesc}>{getTierDescription(tier)}</Text>
-              </View>
-            ))}
-          </View>
-        </Card.Content>
-      </Card>
+              ))}
+            </View>
+          </Card.Content>
+        </Card>
+      )}
+
+      <Snackbar
+        visible={showError}
+        onDismiss={() => setShowError(false)}
+        duration={3000}
+        action={{
+          label: 'Retry',
+          onPress: () => refetch(),
+        }}
+      >
+        Failed to load tier list data
+      </Snackbar>
     </View>
   );
 };
@@ -375,6 +444,49 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 12,
     flex: 1,
+  },
+  // Loading state styles
+  loadingState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    color: colors.textSecondary,
+    fontSize: 16,
+    marginTop: 16,
+  },
+  // Error state styles
+  errorState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  errorTitle: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorSubtitle: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  retryButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

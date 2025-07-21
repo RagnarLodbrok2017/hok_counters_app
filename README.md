@@ -91,6 +91,7 @@
 - npm or yarn
 - Expo CLI
 - iOS Simulator (Mac) or Android Emulator
+- Internet connection (for real-time Honor of Kings data)
 
 ### Installation
 
@@ -122,6 +123,20 @@ npm run android
 # Web
 npm run web
 ```
+
+### 🌐 Real-Time Data Integration
+
+SOLO HOK now integrates with the **Honor of Kings API** by [qing762](https://github.com/qing762/honor-of-kings-api) to provide:
+
+- **Live Hero Data** - Real hero information directly from Honor of Kings official website
+- **Accurate Skills & Stats** - Up-to-date skill descriptions, cooldowns, and damage values
+- **Official Images** - Hero portraits and skin images from the game
+- **Counter Information** - Real counter relationships and synergies
+- **Emblem Recommendations** - Official emblem builds and tips
+
+**API Endpoint**: `https://qing762.is-a.dev/api/wangzhe`
+
+The app automatically fetches and caches data for optimal performance while ensuring you always have the latest game information.
 
 ---
 

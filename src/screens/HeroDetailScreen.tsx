@@ -7,19 +7,65 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
-import { Card, Title, Paragraph, Chip, Button, Divider } from 'react-native-paper';
+import { Card, Title, Paragraph, Chip, Button, Divider, Snackbar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors } from '../theme/theme';
-import buildsData from '../data/builds.json';
-import heroesData from '../data/allHeroes.json';
+import { useHero, useCounterRecommendations, useTeamSynergies } from '../hooks/useHeroes';
 
 const { width } = Dimensions.get('window');
 
 const HeroDetailScreen = ({ route, navigation }: any) => {
-  const { hero } = route.params;
+  const { hero, heroName } = route.params;
   const [activeTab, setActiveTab] = useState('overview');
+  const [showError, setShowError] = useState(false);
+
+  // Use real API data if heroName is provided, otherwise use passed hero data
+  const { 
+    data: apiHero, 
+    isLoading: heroLoading, 
+    error: heroError 
+  } = useHero(heroName || hero?.name);
+
+  const { 
+    data: counterData = { counters: [], counteredBy: [] }, 
+    isLoading: countersLoading 
+  } = useCounterRecommendations(heroName || hero?.name);
+
+  const { 
+    data: synergies = [], 
+    isLoading: synergiesLoading 
+  } = useTeamSynergies(heroName || hero?.name);
+
+  // Use API data if available, otherwise fallback to passed hero data
+  const currentHero = apiHero || hero;
+
+  if (heroLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Loading hero details...</Text>
+      </View>
+    );
+  }
+
+  if (heroError || !currentHero) {
+    return (
+      <View style={styles.errorContainer}>
+        <Icon name="alert-circle-outline" size={64} color={colors.error || '#F44336'} />
+        <Text style={styles.errorTitle}>Failed to load hero</Text>
+        <Text style={styles.errorSubtitle}>Please try again later</Text>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const getRoleColor = (role: string) => {
     const roleColors: { [key: string]: string } = {
@@ -56,9 +102,34 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
     return iconMap[iconName] || 'help';
   };
 
-  const heroBuilds = buildsData.filter(build => build.heroId === hero.id);
-  const counterHeroes = heroesData.filter(h => hero.counters.includes(h.id));
-  const synergyHeroes = heroesData.filter(h => hero.synergies.includes(h.id));
+  // Get hero image safely
+  const getHeroImage = () => {
+    if (currentHero.skins && currentHero.skins.length > 0) {
+      return currentHero.skins[0].image;
+    }
+    return 'https://via.placeholder.com/150x150/333/fff?text=Hero';
+  };
+
+  // Safe access to hero properties with fallbacks
+  const getHeroStats = () => {
+    if (currentHero.stats) {
+      return {
+        survival: currentHero.stats.survival || 0,
+        attack: currentHero.stats.attack || 0,
+        ability: currentHero.stats.ability || 0,
+        difficulty: currentHero.stats.difficulty || 0,
+      };
+    }
+    return { survival: 0, attack: 0, ability: 0, difficulty: 0 };
+  };
+
+  const getHeroSkills = () => {
+    return currentHero.skills || [];
+  };
+
+  const getHeroEmblems = () => {
+    return currentHero.emblems || [];
+  };
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: 'information' },
@@ -68,6 +139,10 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
   ];
 
   const renderTabContent = () => {
+    const stats = getHeroStats();
+    const skills = getHeroSkills();
+    const emblems = getHeroEmblems();
+
     switch (activeTab) {
       case 'overview':
         return (
@@ -75,32 +150,27 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
             {/* Stats */}
             <Card style={styles.sectionCard}>
               <Card.Content>
-                <Title style={styles.sectionTitle}>Base Stats</Title>
+                <Title style={styles.sectionTitle}>Hero Stats</Title>
                 <View style={styles.statsGrid}>
                   <View style={styles.statItem}>
-                    <Icon name="heart" size={20} color="#F44336" />
-                    <Text style={styles.statValue}>{hero.stats.hp}</Text>
-                    <Text style={styles.statLabel}>HP</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Icon name="water" size={20} color="#2196F3" />
-                    <Text style={styles.statValue}>{hero.stats.mana}</Text>
-                    <Text style={styles.statLabel}>Mana</Text>
+                    <Icon name="shield-heart" size={20} color="#F44336" />
+                    <Text style={styles.statValue}>{stats.survival}%</Text>
+                    <Text style={styles.statLabel}>Survival</Text>
                   </View>
                   <View style={styles.statItem}>
                     <Icon name="sword" size={20} color="#FF9800" />
-                    <Text style={styles.statValue}>{hero.stats.attack}</Text>
+                    <Text style={styles.statValue}>{stats.attack}%</Text>
                     <Text style={styles.statLabel}>Attack</Text>
                   </View>
                   <View style={styles.statItem}>
-                    <Icon name="shield" size={20} color="#4CAF50" />
-                    <Text style={styles.statValue}>{hero.stats.defense}</Text>
-                    <Text style={styles.statLabel}>Defense</Text>
+                    <Icon name="auto-fix" size={20} color="#9C27B0" />
+                    <Text style={styles.statValue}>{stats.ability}%</Text>
+                    <Text style={styles.statLabel}>Ability</Text>
                   </View>
                   <View style={styles.statItem}>
-                    <Icon name="run-fast" size={20} color="#9C27B0" />
-                    <Text style={styles.statValue}>{hero.stats.speed}</Text>
-                    <Text style={styles.statLabel}>Speed</Text>
+                    <Icon name="chart-line" size={20} color="#4CAF50" />
+                    <Text style={styles.statValue}>{stats.difficulty}%</Text>
+                    <Text style={styles.statLabel}>Difficulty</Text>
                   </View>
                 </View>
               </Card.Content>
@@ -109,55 +179,74 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
             {/* Lore */}
             <Card style={styles.sectionCard}>
               <Card.Content>
-                <Title style={styles.sectionTitle}>Lore</Title>
-                <Paragraph style={styles.loreText}>{hero.lore}</Paragraph>
+                <Title style={styles.sectionTitle}>About</Title>
+                <Paragraph style={styles.loreText}>
+                  {currentHero.lore || `${currentHero.title} - ${currentHero.name} is a powerful ${currentHero.role} hero in Honor of Kings.`}
+                </Paragraph>
               </Card.Content>
             </Card>
 
-            {/* Tips */}
-            <Card style={styles.sectionCard}>
-              <Card.Content>
-                <Title style={styles.sectionTitle}>Pro Tips</Title>
-                {hero.tips.map((tip: string, index: number) => (
-                  <View key={index} style={styles.tipItem}>
-                    <Icon name="lightbulb" size={16} color={colors.warning} />
-                    <Text style={styles.tipText}>{tip}</Text>
-                  </View>
-                ))}
-              </Card.Content>
-            </Card>
+            {/* Emblems */}
+            {emblems.length > 0 && (
+              <Card style={styles.sectionCard}>
+                <Card.Content>
+                  <Title style={styles.sectionTitle}>Recommended Emblems</Title>
+                  {emblems.map((emblem: any, index: number) => (
+                    <View key={index} style={styles.emblemItem}>
+                      <Image 
+                        source={{ uri: emblem.image }} 
+                        style={styles.emblemIcon}
+                        defaultSource={{ uri: 'https://via.placeholder.com/32x32/333/fff?text=E' }}
+                      />
+                      <View style={styles.emblemInfo}>
+                        <Text style={styles.emblemName}>{emblem.name}</Text>
+                        <Text style={styles.emblemDescription}>{emblem.description}</Text>
+                      </View>
+                    </View>
+                  ))}
+                  {currentHero.emblemTips && (
+                    <View style={styles.tipItem}>
+                      <Icon name="lightbulb" size={16} color={colors.warning || '#FFD93D'} />
+                      <Text style={styles.tipText}>{currentHero.emblemTips}</Text>
+                    </View>
+                  )}
+                </Card.Content>
+              </Card>
+            )}
           </View>
         );
 
       case 'skills':
         return (
           <View style={styles.tabContent}>
-            {hero.skills.map((skill: any, index: number) => (
+            {skills.length > 0 ? skills.map((skill: any, index: number) => (
               <Card key={index} style={styles.skillCard}>
                 <LinearGradient
-                  colors={[getRoleColor(hero.role), `${getRoleColor(hero.role)}40`]}
+                  colors={[getRoleColor(currentHero.role), `${getRoleColor(currentHero.role)}40`]}
                   style={styles.skillHeader}
                 >
                   <View style={styles.skillTitleRow}>
                     <View style={styles.skillIconContainer}>
                       <Icon 
-                        name={getSkillIcon(skill.icon)} 
+                        name={getSkillIcon(skill.icon || 'help')} 
                         size={24} 
                         color="#FFFFFF" 
                       />
                     </View>
                     <View style={styles.skillInfo}>
-                      <Text style={styles.skillName}>{skill.name}</Text>
-                      <Text style={styles.skillType}>{skill.type.toUpperCase()}</Text>
+                      <Text style={styles.skillName}>{skill.name || skill.skillName}</Text>
+                      <Text style={styles.skillType}>
+                        {skill.type ? skill.type.toUpperCase() : index === 0 ? 'PASSIVE' : `SKILL ${index}`}
+                      </Text>
                     </View>
-                    {skill.cooldown > 0 && (
+                    {skill.cooldown && skill.cooldown.length > 0 && skill.cooldown[0] > 0 && (
                       <View style={styles.skillMeta}>
                         <Text style={styles.skillCooldown}>
                           CD: {Array.isArray(skill.cooldown) ? skill.cooldown[0] : skill.cooldown}s
                         </Text>
-                        {skill.manaCost > 0 && (
+                        {skill.cost && skill.cost.length > 0 && skill.cost[0] > 0 && (
                           <Text style={styles.skillMana}>
-                            Mana: {Array.isArray(skill.manaCost) ? skill.manaCost[0] : skill.manaCost}
+                            Cost: {Array.isArray(skill.cost) ? skill.cost[0] : skill.cost}
                           </Text>
                         )}
                       </View>
@@ -165,82 +254,39 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
                   </View>
                 </LinearGradient>
                 <Card.Content style={styles.skillContent}>
-                  <Text style={styles.skillDescription}>{skill.description}</Text>
-                  {skill.damage && (
-                    <View style={styles.skillDamage}>
-                      <Text style={styles.damageLabel}>Damage: </Text>
-                      <Text style={styles.damageValue}>
-                        {Array.isArray(skill.damage) ? skill.damage.join(' / ') : skill.damage}
-                      </Text>
-                    </View>
+                  <Text style={styles.skillDescription}>
+                    {skill.description || skill.skillDesc || 'No description available'}
+                  </Text>
+                  {skill.skillImg && (
+                    <Image 
+                      source={{ uri: skill.skillImg }} 
+                      style={styles.skillImage}
+                      defaultSource={{ uri: 'https://via.placeholder.com/64x64/333/fff?text=Skill' }}
+                    />
                   )}
                 </Card.Content>
               </Card>
-            ))}
+            )) : (
+              <Card style={styles.emptyCard}>
+                <Card.Content>
+                  <Text style={styles.emptyText}>No skill information available</Text>
+                </Card.Content>
+              </Card>
+            )}
           </View>
         );
 
       case 'builds':
         return (
           <View style={styles.tabContent}>
-            {heroBuilds.length > 0 ? (
-              heroBuilds.map((build: any) => (
-                <Card key={build.id} style={styles.buildCard}>
-                  <LinearGradient
-                    colors={[colors.primary, `${colors.primary}60`]}
-                    style={styles.buildHeader}
-                  >
-                    <View style={styles.buildTitleRow}>
-                      <View>
-                        <Text style={styles.buildName}>{build.name}</Text>
-                        <Text style={styles.buildType}>{build.type.toUpperCase()}</Text>
-                      </View>
-                      <View style={styles.buildRating}>
-                        <Icon name="star" size={16} color="#FFD93D" />
-                        <Text style={styles.ratingText}>{build.rating}</Text>
-                      </View>
-                    </View>
-                  </LinearGradient>
-                  <Card.Content style={styles.buildContent}>
-                    <Text style={styles.buildSectionTitle}>Core Items</Text>
-                    <View style={styles.itemsRow}>
-                      {build.items.core.map((item: string, index: number) => (
-                        <View key={index} style={styles.itemChip}>
-                          <Text style={styles.itemText}>{item}</Text>
-                        </View>
-                      ))}
-                    </View>
-                    <Text style={styles.buildSectionTitle}>Arcana</Text>
-                    <View style={styles.arcanaRow}>
-                      <View style={styles.arcanaItem}>
-                        <View style={[styles.arcanaIcon, { backgroundColor: '#F44336' }]}>
-                          <Text style={styles.arcanaText}>R</Text>
-                        </View>
-                        <Text style={styles.arcanaName}>{build.arcana.red}</Text>
-                      </View>
-                      <View style={styles.arcanaItem}>
-                        <View style={[styles.arcanaIcon, { backgroundColor: '#2196F3' }]}>
-                          <Text style={styles.arcanaText}>B</Text>
-                        </View>
-                        <Text style={styles.arcanaName}>{build.arcana.blue}</Text>
-                      </View>
-                      <View style={styles.arcanaItem}>
-                        <View style={[styles.arcanaIcon, { backgroundColor: '#4CAF50' }]}>
-                          <Text style={styles.arcanaText}>G</Text>
-                        </View>
-                        <Text style={styles.arcanaName}>{build.arcana.green}</Text>
-                      </View>
-                    </View>
-                  </Card.Content>
-                </Card>
-              ))
-            ) : (
-              <Card style={styles.emptyCard}>
-                <Card.Content>
-                  <Text style={styles.emptyText}>No builds available for this hero yet.</Text>
-                </Card.Content>
-              </Card>
-            )}
+            <Card style={styles.emptyCard}>
+              <Card.Content>
+                <Text style={styles.emptyText}>Build recommendations coming soon!</Text>
+                <Text style={styles.emptySubtext}>
+                  We're working on integrating build data from the API.
+                </Text>
+              </Card.Content>
+            </Card>
           </View>
         );
 
@@ -251,18 +297,59 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
             <Card style={styles.sectionCard}>
               <Card.Content>
                 <Title style={styles.sectionTitle}>Strong Against</Title>
-                <View style={styles.heroGrid}>
-                  {counterHeroes.map((counterHero: any) => (
-                    <TouchableOpacity
-                      key={counterHero.id}
-                      style={styles.miniHeroCard}
-                      onPress={() => navigation.push('HeroDetail', { hero: counterHero })}
-                    >
-                      <Image source={{ uri: counterHero.avatar }} style={styles.miniHeroImage} />
-                      <Text style={styles.miniHeroName}>{counterHero.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                {countersLoading ? (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                ) : counterData.counters.length > 0 ? (
+                  <View style={styles.heroGrid}>
+                    {counterData.counters.map((counter: any, index: number) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={styles.miniHeroCard}
+                        onPress={() => navigation.push('HeroDetail', { heroName: counter.name })}
+                      >
+                        <Image 
+                          source={{ uri: counter.thumbnail }} 
+                          style={styles.miniHeroImage}
+                          defaultSource={{ uri: 'https://via.placeholder.com/50x50/333/fff?text=Hero' }}
+                        />
+                        <Text style={styles.miniHeroName}>{counter.name}</Text>
+                        <Text style={styles.effectivenessText}>{counter.effectiveness}%</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : (
+                  <Text style={styles.emptyText}>No counter data available</Text>
+                )}
+              </Card.Content>
+            </Card>
+
+            {/* Countered By */}
+            <Card style={styles.sectionCard}>
+              <Card.Content>
+                <Title style={styles.sectionTitle}>Weak Against</Title>
+                {countersLoading ? (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                ) : counterData.counteredBy.length > 0 ? (
+                  <View style={styles.heroGrid}>
+                    {counterData.counteredBy.map((counter: any, index: number) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={styles.miniHeroCard}
+                        onPress={() => navigation.push('HeroDetail', { heroName: counter.name })}
+                      >
+                        <Image 
+                          source={{ uri: counter.thumbnail }} 
+                          style={styles.miniHeroImage}
+                          defaultSource={{ uri: 'https://via.placeholder.com/50x50/333/fff?text=Hero' }}
+                        />
+                        <Text style={styles.miniHeroName}>{counter.name}</Text>
+                        <Text style={styles.effectivenessText}>{counter.effectiveness}%</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : (
+                  <Text style={styles.emptyText}>No counter data available</Text>
+                )}
               </Card.Content>
             </Card>
 
@@ -270,18 +357,29 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
             <Card style={styles.sectionCard}>
               <Card.Content>
                 <Title style={styles.sectionTitle}>Synergizes With</Title>
-                <View style={styles.heroGrid}>
-                  {synergyHeroes.map((synergyHero: any) => (
-                    <TouchableOpacity
-                      key={synergyHero.id}
-                      style={styles.miniHeroCard}
-                      onPress={() => navigation.push('HeroDetail', { hero: synergyHero })}
-                    >
-                      <Image source={{ uri: synergyHero.avatar }} style={styles.miniHeroImage} />
-                      <Text style={styles.miniHeroName}>{synergyHero.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                {synergiesLoading ? (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                ) : synergies.length > 0 ? (
+                  <View style={styles.heroGrid}>
+                    {synergies.map((synergy: any, index: number) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={styles.miniHeroCard}
+                        onPress={() => navigation.push('HeroDetail', { heroName: synergy.name })}
+                      >
+                        <Image 
+                          source={{ uri: synergy.thumbnail }} 
+                          style={styles.miniHeroImage}
+                          defaultSource={{ uri: 'https://via.placeholder.com/50x50/333/fff?text=Hero' }}
+                        />
+                        <Text style={styles.miniHeroName}>{synergy.name}</Text>
+                        <Text style={styles.synergyText}>{synergy.synergy}%</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : (
+                  <Text style={styles.emptyText}>No synergy data available</Text>
+                )}
               </Card.Content>
             </Card>
           </View>
@@ -296,35 +394,35 @@ const HeroDetailScreen = ({ route, navigation }: any) => {
     <View style={styles.container}>
       {/* Hero Header */}
       <LinearGradient
-        colors={[getRoleColor(hero.role), `${getRoleColor(hero.role)}80`]}
+        colors={[getRoleColor(currentHero.role), `${getRoleColor(currentHero.role)}80`]}
         style={styles.heroHeader}
       >
         <View style={styles.heroHeaderContent}>
-          <Image source={{ uri: hero.image }} style={styles.heroImage} />
+          <Image source={{ uri: getHeroImage() }} style={styles.heroImage} />
           <View style={styles.heroInfo}>
-            <Text style={styles.heroName}>{hero.name}</Text>
-            <Text style={styles.heroNameArabic}>{hero.nameArabic}</Text>
-            <Text style={styles.heroTitle}>{hero.title}</Text>
-            <Text style={styles.heroTitleArabic}>{hero.titleArabic}</Text>
+            <Text style={styles.heroName}>{currentHero.name}</Text>
+            <Text style={styles.heroNameArabic}>{currentHero.nameArabic || ''}</Text>
+            <Text style={styles.heroTitle}>{currentHero.title}</Text>
+            <Text style={styles.heroTitleArabic}>{currentHero.titleArabic || ''}</Text>
             <View style={styles.heroMeta}>
               <Chip style={styles.roleChip} textStyle={styles.roleText}>
-                {hero.role}
+                {currentHero.role}
               </Chip>
               <View style={styles.tierBadge}>
-                <Text style={styles.tierText}>{hero.tier}</Text>
+                <Text style={styles.tierText}>{currentHero.tier || 'A'}</Text>
               </View>
             </View>
             <View style={styles.statsRow}>
               <View style={styles.statBadge}>
-                <Text style={styles.statBadgeValue}>{hero.winRate}%</Text>
+                <Text style={styles.statBadgeValue}>{currentHero.winRate || 0}%</Text>
                 <Text style={styles.statBadgeLabel}>Win Rate</Text>
               </View>
               <View style={styles.statBadge}>
-                <Text style={styles.statBadgeValue}>{hero.pickRate}%</Text>
+                <Text style={styles.statBadgeValue}>{currentHero.pickRate || 0}%</Text>
                 <Text style={styles.statBadgeLabel}>Pick Rate</Text>
               </View>
               <View style={styles.statBadge}>
-                <Text style={styles.statBadgeValue}>{hero.banRate}%</Text>
+                <Text style={styles.statBadgeValue}>{currentHero.banRate || 0}%</Text>
                 <Text style={styles.statBadgeLabel}>Ban Rate</Text>
               </View>
             </View>
@@ -725,6 +823,107 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 10,
     textAlign: 'center',
+  },
+  // Loading and error states
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  loadingText: {
+    color: colors.textSecondary,
+    fontSize: 16,
+    marginTop: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    padding: 40,
+  },
+  errorTitle: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorSubtitle: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  backButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  // Emblem styles
+  emblemItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    padding: 8,
+    backgroundColor: colors.surfaceVariant || colors.surface,
+    borderRadius: 8,
+  },
+  emblemIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 12,
+  },
+  emblemInfo: {
+    flex: 1,
+  },
+  emblemName: {
+    color: colors.textPrimary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  emblemDescription: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  // Skill image
+  skillImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  // Counter and synergy effectiveness
+  effectivenessText: {
+    color: colors.primary,
+    fontSize: 9,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  synergyText: {
+    color: '#4CAF50',
+    fontSize: 9,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  // Empty state subtext
+  emptySubtext: {
+    color: colors.textSecondary,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    fontSize: 12,
+    marginTop: 8,
   },
 });
 
